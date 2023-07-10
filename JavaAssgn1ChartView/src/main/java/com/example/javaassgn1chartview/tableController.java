@@ -2,12 +2,18 @@ package com.example.javaassgn1chartview;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -27,6 +33,18 @@ public class tableController implements Initializable {
 
     private final ObservableList<WorldCup> worldCupList = FXCollections.observableArrayList(WORLDCUPEDITIONS);
 
+    private Stage stage;
+    private Scene scene;
+
+    //Creating a method to change view
+    public void switchToChartView(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("chartView.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(fxmlLoader.load(), 600, 600);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -38,7 +56,7 @@ public class tableController implements Initializable {
        tcGoalsAvg.setCellValueFactory(new PropertyValueFactory<>("goalsAvg"));
         //display row data
         goalsAvgTable.setItems(worldCupList);
-        //add items
+        //reading items from database
         try {
             Statement statement = ((Connection) connection).createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM goals_avg");
